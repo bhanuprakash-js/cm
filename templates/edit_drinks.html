@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit Drinks
+{% endblock %}
+
+{% block navlinks %}
+    <li class="nav-item">
+        <a href="{{ url_for('home_page') }}" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('ailes_home_page') }}" class="nav-link">Ailes Home</a>
+    </li>
+    {% if not current_user.is_authenticated %}
+    <li class="nav-item">
+        <a href="{{ url_for('login_page') }}" class="nav-link">Login</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a href="{{ url_for('logout_page') }}" class="nav-link">Logout</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="color: gainsboro;">
+    <h5 class="text-capitalize">Editing The {{ editing_drink_name }}</h5>
+    <form method="post">
+        {{ update_drink_form.hidden_tag() }}
+        <div class="form-group">
+            {{ update_drink_form.drink_name.label() }}
+            {{ update_drink_form.drink_name(class='form-control', placeholder='name of the drink to update') }}
+        </div>
+        <div class="form-group">
+            {{ update_drink_form.description.label() }}
+            {{ update_drink_form.description(class='form-control', placeholder='new description to drink') }}
+        </div>
+        <div class="form-group">
+            {{ update_drink_form.priority.label() }}
+            <span style="justify-content: center; font-size: large;
+            background-color: rgb(57, 66, 80);margin-left: 45%;border-radius: 3px;">
+                <span id="priority_value" name="priority_value">0</span>
+                %
+            </span>
+            {{ update_drink_form.priority(class='form-control-range', min=0, max=100, value=0, 
+                oninput = "document.getElementById('priority_value').innerHTML = this.value") }}
+        </div>
+        <div class="form-group">
+            {{ update_drink_form.category.label() }}
+            {{ update_drink_form.category(class='form-control', placeholder='drink category') }}
+        </div>
+        <br>
+        <div class="form-group">
+            {{ update_drink_form.update_drink_btn(class='btn btn-block btn-success') }}
+        </div>
+    </form>
+</div>
+{% endblock %}

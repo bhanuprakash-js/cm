@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Update Drinks
+{% endblock %}
+
+{% block navlinks %}
+    <li class="nav-item">
+        <a href="{{ url_for('home_page') }}" class="nav-link">Home</a>
+    </li>
+    {% if not current_user.is_authenticated %}
+    <li class="nav-item">
+        <a href="{{ url_for('login_page') }}" class="nav-link">Login</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a href="{{ url_for('logout_page') }}" class="nav-link">Logout</a>
+    </li>
+    {% endif %}
+    
+{% endblock %}
+
+{% block content %}
+
+<div class="container text-white responsive">
+  <h5 class="lead" style="text-decoration:underline;">Manage Your Drinks Here :</h5>
+  <h6>this are the editable drinks of your' s</h6>
+
+  <a href="{{ url_for('ailes_home_page') }}" class="btn btn-success mb-4 float-right">Go To Home</a>
+</div>
+
+<br>
+
+<div class="container responsive">
+    <table class="table responsive">
+        <thead class="thead-light">
+            <tr>
+                <th>No.</th>
+                <th>Cool Drink</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>category</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody class="text-white">
+            {% for drink in all_drinks.items %}
+            {% include 'includes/item_modal.html' %}
+                <tr>
+                  <td>{{ loop.index | safe}}.</td>
+                  <td>{{ drink.drink_name | safe }}</td> 
+                  <td>{{ drink.description | safe }}</td>
+                  <td>{{ drink.priority | safe }}%</td>
+                  <td>{{ drink.category | safe }}</td>
+                  <td>
+                    <form method="post">
+                      {{ edit_value_form.hidden_tag() }}
+                      <input type="hidden" name="drink_to_edit" id="drink_to_edit" value="{{ drink.id | safe }}">
+                      {{ edit_value_form.edit_values_btn(class='btn btn-info float-left') }}
+                      
+                      <button type="button" class="btn btn-danger ml-4"
+                      data-toggle="modal" data-target="#modal-remove-{{drink.id | safe}}">
+                        Remove Drink
+                      </button>
+                    </form>
+                    
+                  </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>   
+    {% if not all_drinks.pages%}
+      <h2 class="lead text-center text-white">Aile Is Empty</h2>
+    {% endif %} 
+</div>
+
+<br>
+
+  <div class="container text-center responsive">
+    <ul class="pagination" style="justify-content: center;">
+      <li class="page-item {% if all_drinks.page == 1 %}disabled{% endif %}">
+        <a href="{{ url_for('update_drinks_page', page=all_drinks.prev_num) }}"
+        class="page-link">&laquo;Previous</a>
+      </li>
+      {% for page_num in all_drinks.iter_pages() %}
+        {% if page_num %}
+          {% if page_num == all_drinks.page %}
+            <li class="page-item active">
+              <a href="{{ url_for('update_drinks_page', page=page_num) }}" class="page-link">{{ page_num }}</a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <a href="{{ url_for('update_drinks_page', page=page_num) }}" class="page-link">{{ page_num }}</a>
+            </li>
+          {% endif %}
+        {% else %}
+            <li>
+              <span class="ellipsis" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">...</span>
+            </li>
+        {% endif %}
+      {% endfor %}
+      <li class="page-item {% if all_drinks.page == all_drinks.pages %}disabled{% endif %}">
+        <a href="{{ url_for('update_drinks_page', page=all_drinks.next_num) }}" class="page-link">Next&raquo;</a>
+      </li>
+    </ul>
+    <p class="text-white">showing page {{ all_drinks.page }} of {{ all_drinks.pages }}</p>
+  </div>
+
+    
+{% endblock %}

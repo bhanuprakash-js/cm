@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Add Drinks
+{% endblock %}
+
+{% block navlinks %}
+    <li class="nav-item">
+        <a href="{{ url_for('home_page') }}" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('ailes_home_page') }}" class="nav-link">Ailes Home</a>
+    </li>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('logout_page') }}" class="nav-link">Log Out</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{{ url_for('ailes_home_page') }}" class="btn btn-success float-right">
+        Go To Home
+      </a>
+</div>
+<br>
+<div class="container" style="color: gainsboro;">
+    <form method="post">
+        {{ add_drink_form.hidden_tag() }}
+        <div class="form-group">
+            {{ add_drink_form.drink_name.label() }}
+            {{ add_drink_form.drink_name(class='form-control', placeholder='name of the drink') }}
+        </div>
+        <div class="form-group">
+            {{ add_drink_form.description.label() }}
+            {{ add_drink_form.description(class='form-control', placeholder='description to drink') }}
+        </div>
+        <div class="form-group">
+            {{ add_drink_form.priority.label() }}
+            <span style="justify-content: center; font-size: large;
+            background-color: rgb(57, 66, 80);margin-left: 45%;border-radius: 3px;">
+                <span id="priority_value" name="priority_value">0</span>
+                %
+            </span>
+            {{ add_drink_form.priority(class='form-control-range', min=0, max=100, value=0, 
+                oninput = "document.getElementById('priority_value').innerHTML = this.value") }}
+        </div>
+        <div class="form-group">
+            {{ add_drink_form.category.label() }}
+            {{ add_drink_form.category(class='form-control', placeholder='drink category') }}
+        </div>
+        <br>
+        <div class="form-group">
+            {{ add_drink_form.add_drink_btn(class='btn btn-block btn-success') }}
+        </div>
+    </form>
+</div>
+{% endblock %}

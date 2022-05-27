@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block navlinks %}
+    <li class="nav-item">
+        <a href="{{ url_for('home_page') }}" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('ailes_home_page') }}" class="nav-link">Ailes Home</a>
+    </li>
+    {% if not current_user.is_authenticated %}
+    <li class="nav-item">
+        <a href="{{ url_for('register_page') }}" class="nav-link">Register</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('login_page') }}" class="nav-link">Login</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a href="{{ url_for('logout_page') }}" class="nav-link">Log out</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron text-center text-white shadow" style="background-color: rgba(122, 152, 177, 0.575);">
+            <small class="float-left ml-4" 
+            style="display: inline;border-left: 5px solid white;height: 150px;"></small>
+            <small class="float-right mr-4 shadow" 
+            style="display: inline;border-left: 5px solid white;height: 150px;"></small>
+
+            <h3 class="lead font-weight-bold">Welcome To The Cooldrinks Manager</h3>
+            <hr style="width: 50%;color: white;">
+            <h6>here you can organize yoour favorite drinks with proper prioritize for each</h6>
+            <br>
+            <a href="{{ url_for('ailes_home_page') }}" class="btn btn-primary shadow">
+                Let' s Get Sorting <span>&NestedGreaterGreater;</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+

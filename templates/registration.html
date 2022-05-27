@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Register Page
+{% endblock %}
+
+{% block navlinks %}
+    <li class="nav-item">
+        <a href="{{ url_for('home_page') }}" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('ailes_home_page') }}" class="nav-link">Ailes Home</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('login_page') }}" class="nav-link">Login</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div class="container text-center" style="color: gainsboro;">
+        <br>
+        <form method="post" class="form-register">
+            {{ register_form.hidden_tag() }}
+
+            <h3 class="h3 mb-3 font-weight-normal" style="color: lightblue;">
+                Please Create Account
+            </h3>
+            
+            {{ register_form.username.label(class='mt-2') }}
+            {{ register_form.username(class='form-control', placeholder='username') }}
+
+            {{ register_form.email_address.label(class='mt-2') }}
+            {{ register_form.email_address(class='form-control', placeholder='email address') }}
+
+            {{ register_form.gender.label(class='mt-2') }}
+            {{ register_form.gender(class='form-control', placeholder='gender') }}
+
+            {{ register_form.date_of_birth.label(class='mt-2') }}
+            {{ register_form.date_of_birth(class='form-control', placeholder='date of birth') }}
+
+            {{ register_form.tel_dtl.label(class='mt-2') }}
+            <h6 style="color: rgb(248, 85, 85);">{{ phone_number_error }}</h6>
+            {{ register_form.tel_dtl(class = 'form-control', 
+            value = country_code, maxlength = maxlength_of_tel_in, placeholder = 'phone number') }}
+
+            {{ register_form.password1.label(class='mt-2') }}
+            {{ register_form.password1(class='form-control', placeholder='password') }}
+
+            {{ register_form.password2.label(class='mt-2') }}
+            {{ register_form.password2(class='form-control', placeholder='confirm password') }}
+
+            <br>
+            <h6>
+                <strong>already a user ?</strong> here use this to login
+                <a href="{{ url_for('login_page') }}" type="button" class="btn btn-secondary btn-sm">Login</a>
+            </h6>
+
+            {{ register_form.submit(class='btn btn-lg btn-block btn-primary', placeholder='register') }}
+
+        </form>
+    </div>
+{% endblock %}
+

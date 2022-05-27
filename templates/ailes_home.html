@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Ailes Home
+{% endblock %}
+
+{% block navlinks %}
+    <li class="nav-item">
+        <a href="{{ url_for('home_page') }}" class="nav-link">Home</a>
+    </li>
+    {% if not current_user.is_authenticated %}
+    <li class="nav-item">
+        <a href="{{ url_for('login_page') }}" class="nav-link">Login</a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a href="{{ url_for('logout_page') }}" class="nav-link">Logout</a>
+    </li>
+    {% endif %}
+    
+{% endblock %}
+
+{% block content %}
+
+<div class="container text-white responsive">
+  <div class="row">
+    <div class="col-8">
+      <h3 class="lead font-weight-bold  ml-4" style="text-decoration: underline;">All Added Drinks :</h3>
+      <span class="ml-4">here are the most of items you added so far</span>
+    </div>
+    <div class="col-2">
+      <div class="dropdown float-left">
+        <button type="button" class="btn btn-outline-success dropdown-toggle text-white" 
+        data-toggle="dropdown">
+          Sort By
+        </button>
+        <div class="dropdown-menu bg-dark">
+          <a href="{{ url_for('ailes_home_page', page=all_drinks.page, sorting='priority') }}" 
+          class="dropdown-item btn btn-primary shadow text-white" role="link"
+          style="background-color: rgba(0, 0, 0, 0);width: 10rem;">
+            By Priority
+          </a>
+
+          <a href="{{ url_for('ailes_home_page', page=all_drinks.page, sorting='added_time') }}" 
+          class="dropdown-item btn btn-primary shadow text-white" role="link"
+          style="background-color: rgba(0, 0, 0, 0);width: 10rem;">
+            By Added Time
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+      <div class="dropdown float-right">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          Options
+        </button>
+        <div class="dropdown-menu">
+          <a href="{{ url_for('add_drinks_page') }}" 
+          class="dropdown-item btn btn-primary shadow" role="link"
+          style="background-color: rgb(109, 211, 109);width: 10rem;margin-left: .5rem;">
+            <kbd style="background-color: lightgreen;color: black;">&plus;</kbd> Add Drinks
+          </a>
+
+          <a href="{{ url_for('update_drinks_page', page=all_drinks.page, sorting='added_time') }}" 
+          class="dropdown-item btn btn-primary shadow {% if not all_drinks.pages %}disabled{% endif %}" 
+          role="link" style="background-color: rgb(109, 157, 211);width: 10rem;margin-top: .5rem;">
+            <kbd style="background-color: rgb(176, 215, 252);color: black;">&UpArrowDownArrow;</kbd> 
+            Update Drinks
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container pt-4" style="background-color:rgb(77, 94, 77); border-radius: 1rem;">
+  <div class="container responsive">
+    <div id="accordion">
+      {% for drink in all_drinks.items %}
+        <div class="card shadow bg-dark">
+          <div class="card-header shadow-sm mb-4 bg-dark" style="border-radius: 5px;"> 
+            <button class="btn btn-block card-link text-white" data-toggle="collapse" 
+            data-target="#collapse-{{ drink.id | safe }}">
+              <div class="row">
+                <div class="col-3">
+                  <span scope="col" class="float-left">{{ loop.index | safe }}.</span>
+                  <h6 scope="col" class="inline" style="margin-top: 1.5px;">{{ drink.drink_name | safe }}</h6>
+                </div>
+                <small scope="col" style="border-left: 2px solid white; height: 20px;"></small>
+                <div class="col-2">
+                  <h6 scope="col" class="inline">{{ drink.category | safe }}</h6>
+                </div>
+                <small scope="col" style="border-left: 2px solid white; height: 20px;"></small>
+                <div class="col-5">
+                  <span scope="col" class="float-left inline">priority : </span>
+                  
+                  <progress scope="col" value="{{ drink.priority | safe }}" style="height: 80%;width: 50%;"
+                  min="0" max="100">
+                  </progress>
+                </div>
+                <div class="col-1">
+                  <span scope="col" class="float-left" >{{ drink.priority | safe }}%</span>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div id="collapse-{{ drink.id | safe }}" class="collapse" data-parent="#accordion">
+            <div class="card-body bg-dark text-white">
+              <div class="container">
+                <div class="row">
+                  <div class="col-2"><h6 class="mt-2">Description : </h6></div>
+                  <div class="col-1"></div>
+                  <div class="col-9 border">
+                    <h6 class="mt-2">
+                      {{ drink.description | safe }}
+                    </h6>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-2"><h6 class="mt-2">Added On : </h6></div>
+                  <div class="col-1"></div>
+                  <div class="col-9 border"><h6 class="mt-2">{{ drink.added_on.date() | safe }} on {{ drink.added_on.time().replace(microsecond=0) }} utc</h6></div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-2"><h6 class="mt-2">Last Updated : </h6></div>
+                  <div class="col-1"></div>
+                  <div class="col-9 border">
+                    <h6 class="mt-2">
+                      {% with last_updated_time = (current_datetime - drink.last_updated) %}
+                        {% if last_updated_time.days > 1 %}
+                          <span>{{ last_updated_time.days }} days ago</span>
+                        {% else %}
+                          {% set seconds = last_updated_time.seconds | int %}
+
+                          {% if last_updated_time.seconds > 3600 %}
+                            <span>{{ seconds // 3600 }} hours and {{ (seconds//60) % 60 }} min ago</span>
+                          {% elif last_updated_time.seconds > 60 and last_updated_time.seconds < 3600 %}
+                            <span>{{ (seconds // 60) % 60 }} minutes ago </span> 
+                          {% else %}
+                            <span>{{ seconds }} seconds ago</span>
+                          {% endif %}
+                        {% endif %}
+                      {% endwith %}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+              <div class="container">
+                <a href="https://www.google.com/search?q={{ drink.drink_name | safe }}"
+                class="btn btn-info my-4 float-right">
+                  More Info On Web
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+      {% endfor %}
+      <br>
+    </div>
+    {% if not all_drinks.pages%}
+      <h2 class="lead text-center text-white">Aile Is Empty</h2>
+    {% endif %}
+  </div>
+</div>
+  
+  <br>
+
+  <div class="container text-center responsive">
+    <ul class="pagination" style="justify-content: center;">
+      <li class="page-item {% if not all_drinks.has_prev %}disabled{% endif %}">
+        <a href="{{ url_for('ailes_home_page', page=all_drinks.prev_num, sorting= priority_sort) }}"
+        class="page-link">&laquo;Previous</a>
+      </li>
+      {% for page_num in all_drinks.iter_pages() %}
+        {% if page_num %}
+          {% if page_num == all_drinks.page %}
+            <li class="page-item active">
+              <a href="{{ url_for('ailes_home_page', page=page_num, sorting= priority_sort) }}" class="page-link">{{ page_num }}</a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <a href="{{ url_for('ailes_home_page', page=page_num, sorting= priority_sort) }}" class="page-link">{{ page_num }}</a>
+            </li>
+          {% endif %}
+        {% else %}
+            <li>
+              <span class="ellipsis" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">...</span>
+            </li>
+        {% endif %}
+      {% endfor %}
+      <li class="page-item {% if not all_drinks.has_next %}disabled{% endif %}">
+        <a href="{{ url_for('ailes_home_page', page=all_drinks.next_num, sorting= priority_sort) }}" class="page-link">Next&raquo;</a>
+      </li>
+    </ul>
+    <p class="text-white">showing page {{ all_drinks.page }} of {{ all_drinks.pages }}</p>
+  </div>
+    
+{% endblock %}

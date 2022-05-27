@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Login Page
+{% endblock %}
+
+{% block navlinks %}
+    <li class="nav-item">
+        <a href="{{ url_for('home_page') }}" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('ailes_home_page') }}" class="nav-link">Ailes Home</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ url_for('register_page') }}" class="nav-link">Register</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div class="container text-center" style="color:gainsboro;">
+        <form method="post" class="form-login">
+            {{ login_form.hidden_tag() }}
+
+            <h3 class="h3 mb-3 font-weight-normal" style="color: lightblue;">
+                Please Login Here
+            </h3>
+
+            {{ login_form.username_or_email.label() }}
+            {{ login_form.username_or_email(class='form-control', placeholder='username or email') }}
+
+            {{ login_form.password.label() }}
+            {{ login_form.password(class='form-control', placeholder='password') }}
+            
+            <br>
+            <h6>
+                <strong>don't have an account ?</strong> try here to get one
+                <a href="{{ url_for('register_page') }}" type="button" class="btn btn-secondary btn-sm">Register</a>
+            </h6>
+            {{ login_form.submit(class='btn btn-lg btn-block btn-primary', placeholder='SignUp') }}
+
+        </form>
+    </div>
+{% endblock %}
